@@ -4,9 +4,15 @@
 %to control the beacons
 
 feasible=true;
+fileName='configs-matlab.xlsx';
 
-%an array of the current configuration's beacon positioning from the source
-pos=[6.5 6.5 6.5 6.5 6.5 6.5]';
+
+%prompt user for configuration number
+sheet=input('Enter the configuration number:');
+
+%read positions
+pos=xlsread(fileName,sheet,'N2:N8');
+
 numSensorsDeployed=length(pos);
 
 %source statistics
@@ -23,7 +29,7 @@ meanTheta=180.59;
 Dthres=19;
 
 %run function to return Rthetax and Rx based on configuration
-[Rthetax, Rx]=config_stats(pos,varTheta, meanTheta);
+[Rthetax, Rx]=config_stats(pos,varTheta, meanTheta,fileName,sheet);
 
 % %remove beacons
 % Rthetax=Rthetax(1:(end-1));
@@ -34,7 +40,7 @@ Dthres=19;
 DistMIN=varTheta+meanTheta^2-Rthetax'*inv(Rx)*Rthetax;
 
 %estimate when all sensors on
-x=[50.25	44.5	41	42.5	46	46.25]'; %measurements at minute 16
+x=[31.75	29.75	41	29.25	50	38	42.25]'; %measurements at minute 16
 theta=Rthetax'*inv(Rx)*x;
 
 
