@@ -39,14 +39,6 @@ Dthres=19;
 %minimum distortion when ALL sensors are on
 DistMIN=varTheta+meanTheta^2-Rthetax'*inv(Rx)*Rthetax;
 
-%estimate when all sensors on
-x=[31.75	29.75	41	29.25	50	38	42.25]'; %measurements at minute 16
-theta=Rthetax'*inv(Rx)*x;
-
-
-
-
-
 %% selection
 if(DistMIN>Dthres)
     feasible=false;
@@ -124,21 +116,13 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
     xlRange1 = 'A1';
     xlRange2 = 'B1';
     
-    if length(pos)==7
-        powers=zeros(1,7)';
-        SIDS = {'7159F19768D2A171';'A127870322513F6A';'FBB44C2E84AB40E3';'582A8CF7C8193BFA';'46532D736FC97E89';'8E453771B5785ED8';'994C2A3D97C3972D'}; %beacon 1,2,3,4,5,6,7
-        powers(indices)=5; %max power is 5 dbm
-        notSelected=setdiff(1:7,indices);
-        powers(notSelected)=-40; %minimum power is -40 dbm
-    else
-        powers=zeros(1,6)';
-        SIDS = {'7159F19768D2A171';'A127870322513F6A';'FBB44C2E84AB40E3';'582A8CF7C8193BFA';'46532D736FC97E89';'994C2A3D97C3972D'}; %beacon 1,2,3,4,5,7
-        powers(indices)=5; %max power is 5 dbm
-        notSelected=setdiff(1:6,indices);
-        powers(notSelected)=-40; %minimum power is -40 dbm
-    end
-  
-     xlswrite(filename,SIDS,sheet,xlRange1)
-     xlswrite(filename,powers,sheet,xlRange2)
+    powers=zeros(1,7)';
+    SIDS = {'7159F19768D2A171';'A127870322513F6A';'FBB44C2E84AB40E3';'582A8CF7C8193BFA';'46532D736FC97E89';'8E453771B5785ED8';'994C2A3D97C3972D'}; %beacon 1,2,3,4,5,6,7
+    powers(indices)=5; %max power is 5 dbm
+    notSelected=setdiff(1:7,indices);
+    powers(notSelected)=-40; %minimum power is -40 dbm
+   
+    xlswrite(filename,SIDS,sheet,xlRange1)
+    xlswrite(filename,powers,sheet,xlRange2)
      
 end
