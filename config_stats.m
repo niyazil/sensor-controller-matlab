@@ -1,27 +1,12 @@
 function [Rthetax, Rx]=config_stats(pos,varTheta, meanTheta)
 
-% %new model (see Issues, Discoveries and Insights entry for 4/18/2017)
-% 
-% %create map of the beacon distances from the source with associated
-% %correlation coefficient
-% distances={4, 5, 6.5, 7, 8, 9, 10.5};
-% correlations={0.87861134,0.870124269, 0.763726186, 0.865185936, 0.612602021, 0.583427047, 0.666666639};
-% correlMap=containers.Map(distances, correlations);
-% 
-% %create Rthetax for this configuration
-% rho_i=[correlMap(pos(1)) correlMap(pos(2)) correlMap(pos(3)) correlMap(pos(4)) correlMap(pos(5)) correlMap(pos(6))]';
-% Rthetax=(varTheta+meanTheta^2)*rho_i;
-% 
-% %create Rx for this configuration
-% temp=rho_i*rho_i';
-% noiseCorrel=diag(ones(6,1)*varNoise);
-% Rx=(varTheta+meanTheta^2)*temp+noiseCorrel;
-% 
-% 
+%create map of the beacon distances from the source with associated
+%correlation coefficient
+distances={4, 5, 6.5, 7, 8, 9, 10.5};
+correlations={0.87861134,0.870124269, 0.763726186, 0.865185936, 0.612602021, 0.583427047, 0.666666639};
+correlMap=containers.Map(distances, correlations);
 
-
-
-%old model (see Issues, Discoveries and Insights entry for 4/18/2017)
+%Model 1(see Issues, Discoveries and Insights entry for 4/18/2017)
 %We have correlation values between 6 beacons when all 6 beacons are 6.5 cm
 %from the source
 %So we will have Rthetax be 6x3 and having the same entry
@@ -29,16 +14,6 @@ function [Rthetax, Rx]=config_stats(pos,varTheta, meanTheta)
 %6.5 cm from the source
 
 rhox3=0.763726186; %assume same for all
-
-%statistics- get for each
-% %population variance
-% varx1=630.2295918;
-% varx2=1528.52551;
-% varx3=354.2410714;
-% varx4=326.7295918;
-% varx5=245.1326531;
-% varx7=209.0063776;
-
 
 %sample variance
 varx1=12.60459184;
