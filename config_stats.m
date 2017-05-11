@@ -20,18 +20,21 @@ if length(pos)==7
     rhox7=correlMap(pos(7)); 
 end
 
+%prompt user for name of configuration file
+fileName=input('Enter the configuration file name (with file extension):','s');
+
 %read sample means for this configuration
 if(length(pos)==6)
-    meanx=xlsread('config1.xlsx','B1:B6');
+    meanx=xlsread(fileName,'B1:B6');
 else
-    meanx=xlsread('config1.xlsx','B1:B7');
+    meanx=xlsread(fileName,'B1:B7');
 end
 
 %read sample variances for this configuration
 if(length(pos)==6)
-    varx= xlsread('config1.xlsx','D1:D6');
+    varx= xlsread(fileName,'D1:D6');
 else
-    varx= xlsread('config1.xlsx','D1:D7');
+    varx= xlsread(fileName,'D1:D7');
 end
 
 
@@ -48,7 +51,7 @@ Rthetax=[rhox1*sqrt(varx(1)*varTheta)+meanx(1)*meanTheta;
 %read correlation matrix for this configuration and create Rx
 if(length(pos)==6)
     
-    correlMat=xlsread('config1.xlsx','F3:K8');
+    correlMat=xlsread(fileName,'F3:K8');
     
     Rx=[varx(1)+meanx(1)^2 correlMat(1,2)*sqrt(varx(1)*varx(2))+meanx(1)*meanx(2) correlMat(1,3)*sqrt(varx(1)*varx(3))+meanx(1)*meanx(3) correlMat(1,4)*sqrt(varx(1)*varx(4))+meanx(1)*meanx(4) correlMat(1,5)*sqrt(varx(1)*varx(5))+meanx(1)*meanx(5) correlMat(1,6)*sqrt(varx(1)*varx(6))+meanx(1)*meanx(6);
         correlMat(2,1)*sqrt(varx(1)*varx(2))+meanx(1)*meanx(2)	varx(2)+meanx(2)^2	correlMat(2,3)*sqrt(varx(2)*varx(3))+meanx(2)*meanx(3)	correlMat(2,4)*sqrt(varx(2)*varx(4))+meanx(2)*meanx(4)	correlMat(2,5)*sqrt(varx(2)*varx(5))+meanx(2)*meanx(5)	correlMat(2,6)*sqrt(varx(2)*varx(6))+meanx(2)*meanx(6);
@@ -63,7 +66,7 @@ if(length(pos)==6)
 
 else
     
-    correlMat=xlsread('config1.xlsx','F3:L9');
+    correlMat=xlsread(fileName,'F3:L9');
     
     Rx=[varx(1)+meanx(1)^2 correlMat(1,2)*sqrt(varx(1)*varx(2))+meanx(1)*meanx(2) correlMat(1,3)*sqrt(varx(1)*varx(3))+meanx(1)*meanx(3) correlMat(1,4)*sqrt(varx(1)*varx(4))+meanx(1)*meanx(4) correlMat(1,5)*sqrt(varx(1)*varx(5))+meanx(1)*meanx(5) correlMat(1,6)*sqrt(varx(1)*varx(6))+meanx(1)*meanx(6) correlMat(1,7)*sqrt(varx(1)*varx(7))+meanx(1)*meanx(7);
         correlMat(2,1)*sqrt(varx(1)*varx(2))+meanx(1)*meanx(2)	varx(2)+meanx(2)^2	correlMat(2,3)*sqrt(varx(2)*varx(3))+meanx(2)*meanx(3)	correlMat(2,4)*sqrt(varx(2)*varx(4))+meanx(2)*meanx(4)	correlMat(2,5)*sqrt(varx(2)*varx(5))+meanx(2)*meanx(5)	correlMat(2,6)*sqrt(varx(2)*varx(6))+meanx(2)*meanx(6) correlMat(2,7)*sqrt(varx(2)*varx(7))+meanx(2)*meanx(7);
