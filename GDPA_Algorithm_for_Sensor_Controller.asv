@@ -4,11 +4,38 @@
 %to control the beacons
 
 feasible=true;
+fileName='configs-matlab.xlsx';
+
+
+%prompt user for configuration number
+sheet=input('Enter the configuration number:');
 
 %read positions
-if
-
+pos=xlsread(fileName,sheet,'N2:N8');
 numSensorsDeployed=length(pos);
+
+%plot current configuration
+sizeOfGrid=50;
+t=linspace(0,2*pi,8);
+t=t(1:end-1); %to remove redundant point
+sensorPos=[pos'.*cos(t);pos'.*sin(t)];
+sourcePos=[0;0];
+FCPos=[30;30]
+
+%create board boundaries
+t=linspace(0,2*pi,100);
+boardPos=[20*cos(t);20*sin(t)]
+
+
+hold on
+scatter([-sizeOfGrid 0 sizeOfGrid],[-sizeOfGrid 0 sizeOfGrid],1,'MarkerEdgeColor','w') %Just to get right display
+axescenter(gca)
+scatter(sensorPos(1,:),sensorPos(2,:),20,'MarkerEdgeColor','b','MarkerFaceColor','b','LineWidth',1)
+scatter(sourcePos(1),sourcePos(2),40,'MarkerEdgeColor','r','MarkerFaceColor','r','LineWidth',1)
+scatter(FCPos(1),FCPos(2),50,'MarkerEdgeColor','g','MarkerFaceColor','g','LineWidth',1)
+plot(boardPos(1,:),boardPos(2,:),'m')
+set(gca,'xminorgrid','on','yminorgrid','on')
+
 
 %source statistics
 
@@ -24,23 +51,10 @@ meanTheta=180.59;
 Dthres=19;
 
 %run function to return Rthetax and Rx based on configuration
-[Rthetax, Rx]=config_stats(pos,varTheta, meanTheta);
-
-% %remove beacons
-% Rthetax=Rthetax(1:(end-1));
-% Rx=Rx(1:(end-1),1:(end-1));
-
+[Rthetax, Rx]=config_stats(pos,varTheta, meanTheta,fileName,sheet);
 
 %minimum distortion when ALL sensors are on
 DistMIN=varTheta+meanTheta^2-Rthetax'*inv(Rx)*Rthetax;
-
-%estimate when all sensors on
-x=[50.25	44.5	41	42.5	46	46.25]'; %measurements at minute 16
-theta=Rthetax'*inv(Rx)*x;
-
-
-
-
 
 %% selection
 if(DistMIN>Dthres)
@@ -119,21 +133,13 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
     xlRange1 = 'A1';
     xlRange2 = 'B1';
     
-    if length(pos)==7
-        powers=zeros(1,7)';
-        SIDS = {'7159F19768D2A171';'A127870322513F6A';'FBB44C2E84AB40E3';'582A8CF7C8193BFA';'46532D736FC97E89';'8E453771B5785ED8';'994C2A3D97C3972D'}; %beacon 1,2,3,4,5,6,7
-        powers(indices)=5; %max power is 5 dbm
-        notSelected=setdiff(1:7,indices);
-        powers(notSelected)=-40; %minimum power is -40 dbm
-    else
-        powers=zeros(1,6)';
-        SIDS = {'7159F19768D2A171';'A127870322513F6A';'FBB44C2E84AB40E3';'582A8CF7C8193BFA';'46532D736FC97E89';'994C2A3D97C3972D'}; %beacon 1,2,3,4,5,7
-        powers(indices)=5; %max power is 5 dbm
-        notSelected=setdiff(1:6,indices);
-        powers(notSelected)=-40; %minimum power is -40 dbm
-    end
-  
-     xlswrite(filename,SIDS,sheet,xlRange1)
-     xlswrite(filename,powers,sheet,xlRange2)
+    powers=zeros(1,7)';
+    SIDS = {'7159F19768D2A171';'A127870322513F6A';'FBB44C2E84AB40E3';'582A8CF7C8193BFA';'46532D736FC97E89';'8E453771B5785ED8';'994C2A3D97C3972D'}; %beacon 1,2,3,4,5,6,7
+    powers(indices)=5; %max power is 5 dbm
+    notSelected=setdiff(1:7,indices);
+    powers(notSelected)=-40; %minimum power is -40 dbm
+   
+    xlswrite(filename,SIDS,sheet,xlRange1)
+    xlswrite(filename,powers,sheet,xlRange2)
      
 end
