@@ -1,0 +1,6 @@
+function[c,ceq]=confun(P,RvAlg,sigmax,sigma_theta,R_thetaAlg,RxAlg,Dthres)
+
+Dp=diag(sqrt(P)./sigmax);
+c=sigma_theta^2-R_thetaAlg*Dp*(Dp*RxAlg*Dp+RvAlg)^(-1)*Dp*R_thetaAlg'-Dthres;
+ceq=[];
+

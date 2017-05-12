@@ -42,6 +42,7 @@ axis off
 % Place frames at bottom left
 movie(hf,M,1,1,[0 0 0 0]);
 
+%save movie
 movie2avi(M,'GDPA_selection','Compression','None','fps',1)
 
 
