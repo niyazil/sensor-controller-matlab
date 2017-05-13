@@ -19,19 +19,21 @@ sheet=input('Enter the configuration number:');
 pos=xlsread(fileName,sheet,'N2:N8');
 numSensorsDeployed=length(pos);
 
+FC_pos=[25,0];
+
 %source statistics
 varTheta=60.811325;
 meanTheta=180.59;
 
 %distortion constraint
-Dthres=19;
+Dthres=30000;
 
 %max and min powers in linear scale
 Pmax=10^(5/10); %5 dbm to mW
 Pmin=10^(-40/10); %-40 dbm to mW
 
 %run function to return Rthetax and Rx based on configuration
-[Rthetax,Rx,DpAllOn,Rv]=config_stats_power_allocation(pos,varTheta,meanTheta,Pmax,fileName,sheet);
+[Rthetax,Rx,DpAllOn,Rv]=config_stats_power_allocation(pos,FC_pos,varTheta,meanTheta,Pmax,fileName,sheet);
 
 %minimum distortion when ALL sensors are on
 DistMIN=varTheta+meanTheta^2-Rthetax'*DpAllOn*inv(DpAllOn*Rx*DpAllOn+Rv)*DpAllOn*Rthetax;
@@ -112,18 +114,20 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
 
   %% Power Allocation
     options=optimoptions(@fmincon,'MaxFunEvals',50000);
-    P0=Pmax*ones(1,numSensorsDeployed); %to ensure initial point is feasible
-    lb=Pmin*ones(1,numSensorsDeployed);
-    ub=Pmax*ones(1,numSensorsDeployed);
+    P0=Pmax*ones(1,length(indices)); %to ensure initial point is feasible
+    lb=Pmin*ones(1,length(indices));
+    ub=Pmax*ones(1,length(indices));
     
-    [P,fval]=fmincon(@objfun,P0,[],[],[],[],lb,ub,@(P)confun(P,varTheta,meanTheta,DpAllOn,Rthetax_Alg,Rx_Alg,Rv_Alg,Dthres),options);
+    [P,fval]=fmincon(@objfun,P0,[],[],[],[],lb,ub,@(P)confun(P,varTheta,meanTheta,DpAllOn_Alg,Rthetax_Alg,Rx_Alg,Rv_Alg,Dthres,Pmax),options);
     
-    temp=diag(DpAllON/sqrt(Pmax)); %replace Pmax entries with new powers for each sensor
-    Dp=diag(temp.*P);
+    temp=diag(DpAllOn_Alg/sqrt(Pmax)); %replace Pmax entries with new powers for each sensor
+    Dp_Alg=diag(temp'.*P);
    
-    reducedDist=varTheta+meanTheta^2-Rthetax_Alg'*Dp*inv(Dp*Rx_Alg*Dp+Rv_Alg)*Dp*Rthetax_Alg;
+    reducedDist=varTheta+meanTheta^2-Rthetax_Alg'*Dp_Alg*inv(Dp_Alg*Rx_Alg*Dp_Alg+Rv_Alg)*Dp_Alg*Rthetax_Alg;
     totalTransmitPower=fval;
     
     powers_dbm=10*log10(P);
-
+    
+    %% Estimation
+    
 end

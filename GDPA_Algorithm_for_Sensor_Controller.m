@@ -66,7 +66,7 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
         
     
        Rthetax_Alg=Rthetax(subsets(bestComb,:));
-       RxAlg=Rx(subsets(bestComb,:),subsets(bestComb,:));
+       Rx_Alg=Rx(subsets(bestComb,:),subsets(bestComb,:));
        
   k=3; %cuz here we chose 2 sensors not just one
   distVal(k)=bestDist;

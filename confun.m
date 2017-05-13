@@ -1,7 +1,8 @@
-function[c,ceq]=confun(P,varTheta,meanTheta,DpAllOn,Rthetax_Alg,Rx_Alg,Rv_Alg,Dthres)
+function[c,ceq]=confun(P,varTheta,meanTheta,DpAllOn_Alg,Rthetax_Alg,Rx_Alg,Rv_Alg,Dthres,Pmax)
 
-temp=diag(DpAllOn/sqrt(Pmax)); %replace Pmax entries with P vector variable
-Dp=diag(temp.*P);
-c=varTheta+meanTheta^2-Rthetax_Alg'*Dp*inv(Dp*Rx_Alg*Dp+Rv_Alg)*Dp*Rthetax_Alg-Dthres;
+temp=diag(DpAllOn_Alg./sqrt(Pmax)); %replace Pmax entries with P vector variable
+Dp_Alg=diag(temp'.*P);
+
+c=varTheta+meanTheta^2-Rthetax_Alg'*Dp_Alg*inv(Dp_Alg*Rx_Alg*Dp_Alg+Rv_Alg)*Dp_Alg*Rthetax_Alg-Dthres;
 ceq=[];
 

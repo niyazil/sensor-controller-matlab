@@ -4,7 +4,7 @@ t=linspace(0,2*pi,8);
 t=t(1:end-1); %to remove redundant point
 sensorPos=[pos'.*cos(t);pos'.*sin(t)];
 sourcePos=[0;0];
-FCPos=[30;30];
+FCPos=[25;0];
 
 %create board boundaries
 t=linspace(0,2*pi,100);
