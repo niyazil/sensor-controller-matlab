@@ -1,4 +1,4 @@
-function [Rthetax,Rx,DpAllOn,Rv]=config_stats_power_allocation(pos,FC_pos,varTheta,meanTheta,Pmax,fileName,sheet)
+function [Rthetax,Rx,DpAllOn,Rv,DhAllOn,Rv_prime,v]=config_stats_power_allocation(pos,FC_pos,varTheta,meanTheta,Pmax,fileName,sheet)
 
 %create map of the beacon distances from the source with associated
 %correlation coefficient
@@ -48,23 +48,27 @@ Rx=[varx(1)+meanx(1)^2 correlMat(1,2)*sqrt(varx(1)*varx(2))+meanx(1)*meanx(2) co
 DpAllOn=diag(sqrt(Pmax/varx));
 
 %return Rv
-    %model channel using simple path loss model for reference 4 cm at which gain is 1 (i.e. model is valid for d>=4 cm)
+    %model channel using simple path loss model for reference distance d0=4 cm at which gain is 1 (i.e. model is valid for d>=4 cm)
    
+        d0=4/100;
         %distance between source and FC
         t=linspace(0,2*pi,8);
         t=t(1:end-1); %to remove redundant point
-        sensor_pos=[pos'.*cos(t);pos'.*sin(t)]
-        d=((sensor_pos(1,:)-FC_pos(1)).^2+(sensor_pos(2,:)-FC_pos(2)).^2).^(0.5)
+        sensor_pos=[pos'.*cos(t);pos'.*sin(t)];
+        d=(((sensor_pos(1,:)-FC_pos(1)).^2+(sensor_pos(2,:)-FC_pos(2)).^2).^(0.5))/1000; %from cm to decameters since LOS range of beacons is 150 m so assuming decays exponentially in 10s of meters
 
         gamma=2;
-        g=1./(d.^gamma)
+        g=(d0./d).^gamma;
         
     %assume reciever noise is zero mean, uncorrelated, and same for all
     %recievers
-    varRxNoise=0.001;
-    Rv=diag(varRxNoise./(g.^2))
+    varRxNoise=0.001*ones(1,7);
+    Rv=diag(varRxNoise./(g.^2));
+    Rv_prime=diag(varRxNoise);
     
-    
+%return DhAllOn for which all sensors are at Pmax
+DhAllOn=diag(g.*sqrt(Pmax/varx));    
+v=ones(7,1)*0.1;
 end
 
 

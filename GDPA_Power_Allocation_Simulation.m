@@ -9,6 +9,8 @@
 %Note: Configuration statistics are provided by the
 %config_stats_power_allocation function
 
+clear all
+
 feasible=true;
 fileName='configs-matlab.xlsx';
 
@@ -19,7 +21,7 @@ sheet=input('Enter the configuration number:');
 pos=xlsread(fileName,sheet,'N2:N8');
 numSensorsDeployed=length(pos);
 
-FC_pos=[25,0];
+FC_pos=[21,0];
 
 %source statistics
 varTheta=60.811325;
@@ -33,11 +35,19 @@ Pmax=10^(5/10); %5 dbm to mW
 Pmin=10^(-40/10); %-40 dbm to mW
 
 %run function to return Rthetax and Rx based on configuration
-[Rthetax,Rx,DpAllOn,Rv]=config_stats_power_allocation(pos,FC_pos,varTheta,meanTheta,Pmax,fileName,sheet);
+[Rthetax,Rx,DpAllOn,Rv,DhAllOn,Rv_prime,v]=config_stats_power_allocation(pos,FC_pos,varTheta,meanTheta,Pmax,fileName,sheet);
 
 %minimum distortion when ALL sensors are on
 DistMIN=varTheta+meanTheta^2-Rthetax'*DpAllOn*inv(DpAllOn*Rx*DpAllOn+Rv)*DpAllOn*Rthetax;
 
+%best estimate when all sensors on
+%x=xlsread(fileName,'B2:B8');
+
+x=[50.25	44.5	41	42.5	46	45.75	46.25]'; %configuration 2 at minute 16]'; %configuration 1 at minute 16
+%x=[31.75	29.75	41	29.25	50	38	42.25]'; %configuration 2 at minute 16
+%x=[66.5	37.25	26.25	36	31.75	45.75	31.5]'; %configuration 3 at minute 16
+theta=Rthetax'*DhAllOn*inv(DhAllOn*Rx*DhAllOn+Rv_prime)*DhAllOn*x+Rthetax'*DhAllOn*inv(DhAllOn*Rx*DhAllOn+Rv_prime)*v;
+    
 %% Selection
 if(DistMIN>Dthres)
     feasible=false;
@@ -78,6 +88,8 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
        Rthetax_Alg=Rthetax(subsets(bestComb,:));
        Rx_Alg=Rx(subsets(bestComb,:),subsets(bestComb,:));
        Rv_Alg=Rv(subsets(bestComb,:),subsets(bestComb,:));
+       DhAllOn_Alg=DhAllOn(subsets(bestComb,:),subsets(bestComb,:));
+       Rv_prime_Alg=Rv_prime(subsets(bestComb,:),subsets(bestComb,:));
        
   k=3; %Because we have already chosen 2 sensors, the count is set to 3
   distVal(k)=bestDist;
@@ -104,9 +116,11 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
       k=k+1;
       
       DpAllOn_Alg=DpAllOn(indices,indices);
+      DhAllOn_Alg=DhAllOn(indices,indices);
       Rthetax_Alg=Rthetax(indices);
       Rx_Alg=Rx(indices,indices);
       Rv_Alg=Rv(indices,indices);
+      Rv_prime_Alg=Rv_prime(indices,indices);
       
       currentDist=bestDist;
       distVal(k)=currentDist;
@@ -121,7 +135,9 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
     [P,fval]=fmincon(@objfun,P0,[],[],[],[],lb,ub,@(P)confun(P,varTheta,meanTheta,DpAllOn_Alg,Rthetax_Alg,Rx_Alg,Rv_Alg,Dthres,Pmax),options);
     
     temp=diag(DpAllOn_Alg/sqrt(Pmax)); %replace Pmax entries with new powers for each sensor
-    Dp_Alg=diag(temp'.*P);
+    Dp_Alg=diag(temp'.*sqrt(P));
+    temp=diag(DhAllOn_Alg/sqrt(Pmax));
+    Dh_Alg=diag(temp'.*sqrt(P));
    
     reducedDist=varTheta+meanTheta^2-Rthetax_Alg'*Dp_Alg*inv(Dp_Alg*Rx_Alg*Dp_Alg+Rv_Alg)*Dp_Alg*Rthetax_Alg;
     totalTransmitPower=fval;
@@ -129,5 +145,14 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
     powers_dbm=10*log10(P);
     
     %% Estimation
+    
+%x=xlsread(fileName,'B2:B8');
+
+x=[50.25	44.5	41	42.5	46	45.75	46.25]'; %configuration 2 at minute 16]'; %configuration 1 at minute 16
+%x=[31.75	29.75	41	29.25	50	38	42.25]'; %configuration 2 at minute 16
+%x=[66.5	37.25	26.25	36	31.75	45.75	31.5]'; %configuration 3 at minute 16
+x=x(indices);
+v_Alg=v(indices);
+theta=Rthetax_Alg'*Dh_Alg*inv(Dh_Alg*Rx_Alg*Dh_Alg+Rv_prime_Alg)*Dh_Alg*x+Rthetax_Alg'*Dh_Alg*inv(Dh_Alg*Rx_Alg*Dh_Alg+Rv_prime_Alg)*v_Alg;
     
 end

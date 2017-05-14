@@ -9,6 +9,8 @@
 %Note: Configuration statistics are provided by the
 %config_stats_power_allocation function
 
+clear all
+
 feasible=true;
 fileName='configs-matlab.xlsx';
 
@@ -19,22 +21,21 @@ sheet=input('Enter the configuration number:');
 pos=xlsread(fileName,sheet,'N2:N8');
 numSensorsDeployed=length(pos);
 
-source_pos=[0,0];
-FC_pos=[,40];
+FC_pos=[21,0];
 
 %source statistics
 varTheta=60.811325;
 meanTheta=180.59;
 
 %distortion constraint
-Dthres=19;
+Dthres=30000;
 
 %max and min powers in linear scale
 Pmax=10^(5/10); %5 dbm to mW
 Pmin=10^(-40/10); %-40 dbm to mW
 
 %run function to return Rthetax and Rx based on configuration
-[Rthetax,Rx,DpAllOn,Rv]=config_stats_power_allocation(pos,source_pos,FC_pos,varTheta,meanTheta,Pmax,fileName,sheet);
+[Rthetax,Rx,DpAllOn,Rv]=config_stats_power_allocation(pos,FC_pos,varTheta,meanTheta,Pmax,fileName,sheet);
 
 %minimum distortion when ALL sensors are on
 DistMIN=varTheta+meanTheta^2-Rthetax'*DpAllOn*inv(DpAllOn*Rx*DpAllOn+Rv)*DpAllOn*Rthetax;
@@ -115,18 +116,29 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
 
   %% Power Allocation
     options=optimoptions(@fmincon,'MaxFunEvals',50000);
-    P0=Pmax*ones(1,numSensorsDeployed); %to ensure initial point is feasible
-    lb=Pmin*ones(1,numSensorsDeployed);
-    ub=Pmax*ones(1,numSensorsDeployed);
+    P0=Pmax*ones(1,length(indices)); %to ensure initial point is feasible
+    lb=Pmin*ones(1,length(indices));
+    ub=Pmax*ones(1,length(indices));
     
-    [P,fval]=fmincon(@objfun,P0,[],[],[],[],lb,ub,@(P)confun(P,varTheta,meanTheta,DpAllOn,Rthetax_Alg,Rx_Alg,Rv_Alg,Dthres),options);
+    [P,fval]=fmincon(@objfun,P0,[],[],[],[],lb,ub,@(P)confun(P,varTheta,meanTheta,DpAllOn_Alg,Rthetax_Alg,Rx_Alg,Rv_Alg,Dthres,Pmax),options);
     
-    temp=diag(DpAllON/sqrt(Pmax)); %replace Pmax entries with new powers for each sensor
-    Dp=diag(temp.*P);
+    temp=diag(DpAllOn_Alg/sqrt(Pmax)); %replace Pmax entries with new powers for each sensor
+    Dp_Alg=diag(temp'.*P);
    
-    reducedDist=varTheta+meanTheta^2-Rthetax_Alg'*Dp*inv(Dp*Rx_Alg*Dp+Rv_Alg)*Dp*Rthetax_Alg;
+    reducedDist=varTheta+meanTheta^2-Rthetax_Alg'*Dp_Alg*inv(Dp_Alg*Rx_Alg*Dp_Alg+Rv_Alg)*Dp_Alg*Rthetax_Alg;
     totalTransmitPower=fval;
     
     powers_dbm=10*log10(P);
+    
+    %% Estimation
+    
+%x=xlsread(fileName,'B2:B8');
 
+%x=[50.25	44.5	41	42.5	46	45.75	46.25]'; %configuration 2 at minute 16]'; %configuration 1 at minute 16
+x=[31.75	29.75	41	29.25	50	38	42.25]'; %configuration 2 at minute 16
+%x=[66.5	37.25	26.25	36	31.75	45.75	31.5]'; %configuration 3 at minute 16
+  
+Dh_Alg=Dp_Alg
+theta=Rthetax_Alg'*Dh_Alg*inv(Dh_Alg*Rx_Alg*Dh_Alg+Rv_Alg)*Dh*x+Rthetax_Alg'*Dh_Alg*inv(Dh_Alg*Rx_Alg*Dh_Alg+Rv_Alg)*v;
+    
 end
