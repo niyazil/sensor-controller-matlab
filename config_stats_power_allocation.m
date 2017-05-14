@@ -50,7 +50,7 @@ DpAllOn=diag(sqrt(Pmax/varx));
 %return Rv
     %model channel using simple path loss model for reference distance d0=4 cm at which gain is 1 (i.e. model is valid for d>=4 cm)
    
-        d0=4/100;
+        d0=4/1000; %in decameters
         %distance between source and FC
         t=linspace(0,2*pi,8);
         t=t(1:end-1); %to remove redundant point
