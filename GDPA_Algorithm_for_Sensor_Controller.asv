@@ -6,7 +6,7 @@
 clear all
 
 feasible=true;
-fileName='configs-matlab1.xlsx';
+fileName='configs-matlab.xlsx';
 
 
 %prompt user for configuration number

@@ -62,7 +62,8 @@ DpAllOn=diag(sqrt(Pmax/varx));
         
     %assume reciever noise is zero mean, uncorrelated, and same for all
     %recievers
-    varRxNoise=0.001*ones(1,7);
+    noise=0.001;
+    varRxNoise=noise*ones(1,7);
     Rv=diag(varRxNoise./(g.^2));
     Rv_prime=diag(varRxNoise);
     

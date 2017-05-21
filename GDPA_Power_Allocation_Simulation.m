@@ -12,7 +12,7 @@
 clear all
 format long
 feasible=true;
-fileName='configs-matlab.xlsx';
+fileName='configs-matlab1.xlsx';
 
 %prompt user for configuration number
 sheet=input('Enter the configuration number:');
@@ -28,7 +28,7 @@ varTheta=60.811325;
 meanTheta=180.59;
 
 %distortion constraint
-Dthres=258;
+Dthres=335;
 
 %max and min powers in linear scale
 Pmax=10^(5/10); %5 dbm to mW
@@ -43,12 +43,12 @@ DistMIN=varTheta+meanTheta^2-Rthetax'*DpAllOn*inv(DpAllOn*Rx*DpAllOn+Rv)*DpAllOn
 %best estimate when all sensors on
 %x=xlsread(fileName,'B2:B8');
 
-%x=[42.75	33.5	33.25	36	38.75	34.75	39]'; %configuration 1 at minute 2
+x=[42.75	33.5	33.25	36	38.75	34.75	39]'; %configuration 1 at minute 2
 %x=[54.5	48.25	44.5	45.75	46	49	46.25]'; %configuration 1 at minute 25
 %x=[50.25	48.25	41	42.5	42.75	49	42.25]'; %configuration 1 at minute 50
 %x=[28	26.75	30	26.25	38.75	31	31.5]'; %configuration 2 at minute 2
 %x=[31.75	29.75	41	29.25	50	38	42.25]'; %configuration 2 at minute 16
-x=[46.25	29.75	26.25	29.25	28	34.75	28.5]'; %configuration 3 at minute 2
+%x=[46.25	29.75	26.25	29.25	28	34.75	28.5]'; %configuration 3 at minute 2
 %x=[66.5	37.25	26.25	36	31.75	45.75	31.5]'; %configuration 3 at minute 16
 
 bestTheta=Rthetax'*DhAllOn*inv(DhAllOn*Rx*DhAllOn+Rv_prime)*DhAllOn*x+Rthetax'*DhAllOn*inv(DhAllOn*Rx*DhAllOn+Rv_prime)*v;
@@ -153,12 +153,12 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
     
 %x=xlsread(fileName,'B2:B8');
 
-%x=[42.75	33.5	33.25	36	38.75	34.75	39]'; %configuration 1 at minute 2
+x=[42.75	33.5	33.25	36	38.75	34.75	39]'; %configuration 1 at minute 2
 %x=[54.5	48.25	44.5	45.75	46	49	46.25]'; %configuration 1 at minute 25
 %x=[50.25	48.25	41	42.5	42.75	49	42.25]'; %configuration 1 at minute 50
 %x=[28	26.75	30	26.25	38.75	31	31.5]'; %configuration 2 at minute 2
 %x=[31.75	29.75	41	29.25	50	38	42.25]'; %configuration 2 at minute 16
-x=[46.25	29.75	26.25	29.25	28	34.75	28.5]'; %configuration 3 at minute 2
+%x=[46.25	29.75	26.25	29.25	28	34.75	28.5]'; %configuration 3 at minute 2
 %x=[66.5	37.25	26.25	36	31.75	45.75	31.5]'; %configuration 3 at minute 16
 
 x=x(indices);
