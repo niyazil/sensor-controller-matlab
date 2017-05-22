@@ -34,13 +34,15 @@ DistMIN=varTheta+meanTheta^2-Rthetax'*inv(Rx)*Rthetax;
 %% Selection
 if(DistMIN>Dthres)
     feasible=false;
+elseif(Dthres>varTheta+meanTheta^2)
+    display('No need for a sensor network with that threshold!')
 else
 %vector to indicate whether sensor has been selected or not- initialized to
 %false
 selected=false(1,numSensorsDeployed);
 
 %vector to store distortion values as selection occurs
-distVal=[varTheta varTheta];
+distVal=[varTheta+meanTheta^2 varTheta+meanTheta^2];
 
 %try out two sensor combination cuz initial set needs to be exhaustive
 subsetSize=2;
@@ -67,8 +69,6 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
        
       
         %create matrices
-        
-    
        Rthetax_Alg=Rthetax(subsets(bestComb,:));
        Rx_Alg=Rx(subsets(bestComb,:),subsets(bestComb,:));
        

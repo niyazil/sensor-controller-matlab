@@ -7,39 +7,43 @@ function varargout=myGUI_GDPA(varargin)
 %% Construct the components
 
     %Create panels for input and output display
-    p1=uipanel(fh,'Units','normalized','Position',[0.1 0.1 0.25 0.65]);
-    p2=uipanel(fh,'Units','normalized','Position',[0.4 0.1 0.55 0.8]);
+    title=uicontrol(fh,'Style','text','String','TITLE','Units','normalized','Position',[0.3 0.85 0.4 0.12],'FontSize',60,'FontName','Cambria','FontWeight','bold');
+    p1=uipanel(fh,'Units','normalized','Position',[0.1 0.1 0.2 0.45]);
+    p2=uipanel(fh,'Units','normalized','Position',[0.35 0.1 0.6 0.75]);
     
-    bg=uibuttongroup(fh,'Title','Choose a configuration:','Units','normalized','Position',[0.1 0.79 0.25 0.13]); 
-    r1=uicontrol(bg,'Style','radiobutton','String','Configuration 1','Value',0,'Units','normalized','Position',[0.1,0.79 0.25 0.13]);
-    r2=uicontrol(bg,'Style','radiobutton','String','Configuration 2','Value',0,'Units','normalized','Position',[0.1,0.5 0.25 0.13]);
-    r3=uicontrol(bg,'Style','radiobutton','String','Configuration 3','Value',0,'Units','normalized','Position',[0.1,0.21 0.25 0.13]);
+    bg=uibuttongroup(fh,'Title','Choose a configuration:','Units','normalized','Position',[0.1 0.58 0.2 0.28],'FontSize',20,'FontName','Cambria'); 
+    r1=uicontrol(bg,'Style','radiobutton','String','Configuration 1','Value',0,'Units','normalized','Position',[0.1 0.7 0.4 0.2],'FontSize',14,'FontName','Cambria');
+    r2=uicontrol(bg,'Style','radiobutton','String','Configuration 2','Value',0,'Units','normalized','Position',[0.1 0.4 0.4 0.2],'FontSize',14,'FontName','Cambria');
+    r3=uicontrol(bg,'Style','radiobutton','String','Configuration 3','Value',0,'Units','normalized','Position',[0.1 0.1 0.4 0.2],'FontSize',14,'FontName','Cambria');
     radioButtons={r1,r2,r3};
     set(bg,'SelectionChangeFcn',{@buttonGroup_SelectionChangeFcn, radioButtons,fileName});
  
-    ax=axes('Parent',p2,'Units','normalized','Position',[0.1 0.1 0.6 0.8]);
+    ax=axes('Parent',p2,'Units','normalized','Position',[0.03 0.1 0.6 0.8]);
     grid on
-%     
-    txtLabel1=uicontrol(p2,'Style','text','String','Estimate','Units','normalized','Position',[0.778 0.8 0.194 0.073]);
-    txt1=uicontrol(p2,'Style','text','String','','Units','normalized','Position',[0.778 0.75 0.09 0.06],'backgroundcolor',[1 1 1]);
-    txtLabel2=uicontrol(p2,'Style','text','String','Distortion','Units','normalized','Position',[0.778 0.6 0.194 0.073]);
-    txt2=uicontrol(p2,'Style','text','String','','Units','normalized','Position',[0.778 0.55 0.194 0.073],'backgroundcolor',[1 1 1]);
-    txtLabel3=uicontrol(p2,'Style','text','String','Number of active sensors','Units','normalized','Position',[0.778 0.4 0.194 0.073]);
-    txt3=uicontrol(p2,'Style','text','String','','Units','normalized','Position',[0.778 0.35 0.194 0.073],'backgroundcolor',[1 1 1]);
-    txtLabel4=uicontrol(p2,'Style','text','String','Total power','Units','normalized','Position',[0.778 0.2 0.194 0.073]);
-    txt4=uicontrol(p2,'Style','text','String','','Units','normalized','Position',[0.778 0.15 0.194 0.073],'backgroundcolor',[1 1 1]);
-    editBoxes={txt1,txt2,txt3,txt4};
     
-    editLabel1=uicontrol(p1,'Style','text','String','Distortion threshold','Units','normalized','Position',[0.0 0.9 0.2 0.073]);
-    edit1=uicontrol(p1,'Style','edit','String','','Units','normalized','Position',[0.4 0.9 0.09 0.06]);
-    editLabel2=uicontrol(p1,'Style','text','String','Noise','Units','normalized','Position',[0.0 0.5 0.2 0.073]);
-    edit2=uicontrol(p1,'Style','edit','String','','Units','normalized','Position',[0.4 0.5 0.09 0.06]);
-    editLabel3=uicontrol(p1,'Style','text','String','Noise variance','Units','normalized','Position',[0.0 0.3 0.2 0.073]);
-    edit3=uicontrol(p1,'Style','edit','String','','Units','normalized','Position',[0.4 0.3 0.09 0.06]);
-    editLabel4=uicontrol(p1,'Style','text','String','Path-loss component','Units','normalized','Position',[0.0 0.1 0.2 0.073]);
-    edit4=uicontrol(p1,'Style','edit','String','','Units','normalized','Position',[0.4 0.1 0.09 0.06]);
+    txtLabel1=uicontrol(p2,'Style','text','String','Estimate','Units','normalized','Position',[0.7 0.6 0.09 0.086],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');
+    txt1=uicontrol(p2,'Style','text','String','','Units','normalized','Position',[0.8 0.64 0.1 0.05],'backgroundcolor',[0.662745 0.662745 0.662745],'FontSize',14);
+    txtLabel2=uicontrol(p2,'Style','text','String','Distortion','Units','normalized','Position',[0.7 0.5 0.09 0.086],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');
+    txt2=uicontrol(p2,'Style','text','String','','Units','normalized','Position',[0.8 0.54 0.1 0.05],'backgroundcolor',[0.662745 0.662745 0.662745],'FontSize',14);
+    txtLabel3=uicontrol(p2,'Style','text','String','Number of active sensors','Units','normalized','Position',[0.6 0.4 0.19 0.086],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');
+    txt3=uicontrol(p2,'Style','text','String','','Units','normalized','Position',[0.8 0.44 0.1 0.05],'backgroundcolor',[0.662745 0.662745 0.662745],'FontSize',14);
+    txtLabel4=uicontrol(p2,'Style','text','String','Total power','Units','normalized','Position',[0.7 0.3 0.09 0.086],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');
+    txt4=uicontrol(p2,'Style','text','String','','Units','normalized','Position',[0.8 0.34 0.1 0.05],'backgroundcolor',[0.662745 0.662745 0.662745],'FontSize',14);
+
+    handlesDisplay={txt1,txt2,txt3,txt4};
+    editLabel1=uicontrol(p1,'Style','text','String','Distortion threshold','Units','normalized','Position',[0.1 0.8 0.5 0.1],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');
+    edit1=uicontrol(p1,'Style','edit','String','','Units','normalized','Position',[0.65 0.83 0.17 0.08],'FontSize',14,'BackgroundColor',[0.839216 0.839216 0.839216]);
+    editLabel2=uicontrol(p1,'Style','text','String','Noise','Units','normalized','Position',[0.1 0.65 0.5 0.1],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');
+    edit2=uicontrol(p1,'Style','edit','String','','Units','normalized','Position',[0.65 0.68 0.17 0.08],'FontSize',14,'BackgroundColor',[0.839216 0.839216 0.839216]);
+    editLabel3=uicontrol(p1,'Style','text','String','Noise variance','Units','normalized','Position',[0.1 0.5 0.5 0.1],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');
+    edit3=uicontrol(p1,'Style','edit','String','','Units','normalized','Position',[0.65 0.53 0.17 0.08],'FontSize',14,'BackgroundColor',[0.839216 0.839216 0.839216]);
+    editLabel4=uicontrol(p1,'Style','text','String','Path-loss component','Units','normalized','Position',[0.1 0.35 0.5 0.1],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');
+    edit4=uicontrol(p1,'Style','edit','String','','Units','normalized','Position',[0.65 0.38 0.17 0.08],'FontSize',14,'BackgroundColor',[0.839216 0.839216 0.839216]);
     
-    pb1 = uicontrol(p1,'Style','pushbutton','String','Run simulation','Position',[50 20 60 40]);
+    editBoxes={edit1,edit2,edit3,edit4};
+    txtInfeasible=uicontrol(p1,'Style','text','String','Infeasible!','Units','normalized','Position',[0.2780 0.05 0.5 0.5],'ForegroundColor','Red','FontSize',14,'Visible','off');
+    pb1 = uicontrol(p1,'Style','pushbutton','String','Run Simulation','Position',[85 80 190 40],'FontSize',18,'FontName','Cambria','Callback',{@runSimulations_Callback,editBoxes,radioButtons,txtInfeasible,handlesDisplay,fileName});
+    
 %% Initialization tasks
 
     

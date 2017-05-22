@@ -6,7 +6,7 @@
 clear all
 
 feasible=true;
-fileName='configs-matlab.xlsx';
+fileName='configs-matlab1.xlsx';
 
 
 %prompt user for configuration number
@@ -34,6 +34,8 @@ DistMIN=varTheta+meanTheta^2-Rthetax'*inv(Rx)*Rthetax;
 %% Selection
 if(DistMIN>Dthres)
     feasible=false;
+elseif(Dthres>varTheta+meanTheta^2)
+    display('No need for a sensor network with that threshold!')
 else
 %vector to indicate whether sensor has been selected or not- initialized to
 %false
@@ -67,8 +69,6 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
        
       
         %create matrices
-        
-    
        Rthetax_Alg=Rthetax(subsets(bestComb,:));
        Rx_Alg=Rx(subsets(bestComb,:),subsets(bestComb,:));
        

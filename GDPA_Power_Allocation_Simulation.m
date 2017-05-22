@@ -28,11 +28,11 @@ varTheta=60.811325;
 meanTheta=180.59;
 
 %distortion constraint
-Dthres=335;
+Dthres=50;
 
 %max and min powers in linear scale
 Pmax=10^(5/10); %5 dbm to mW
-Pmin=10^(-40/10); %-40 dbm to mW
+% Pmin=10^(-40/10); %-40 dbm to mW
 
 %run function to return Rthetax and Rx based on configuration
 [Rthetax,Rx,DpAllOn,Rv,DhAllOn,Rv_prime,v]=config_stats_power_allocation(pos,FC_pos,varTheta,meanTheta,Pmax,fileName,sheet);
@@ -56,6 +56,8 @@ bestTheta=Rthetax'*DhAllOn*inv(DhAllOn*Rx*DhAllOn+Rv_prime)*DhAllOn*x+Rthetax'*D
 %% Selection
 if(DistMIN>Dthres)
     feasible=false;
+elseif(Dthres>varTheta+meanTheta^2)
+    display('No need for a sensor network with that threshold!')
 else
 %vector to indicate whether sensor has been selected or not- initialized to
 %false
@@ -134,14 +136,14 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
   %% Power Allocation
     options=optimoptions(@fmincon,'MaxFunEvals',50000);
     P0=Pmax*ones(1,length(indices)); %to ensure initial point is feasible
-    lb=Pmin*ones(1,length(indices));
+    lb=zeros(1,length(indices));
     ub=Pmax*ones(1,length(indices));
     
-    [P,fval]=fmincon(@objfun,P0,[],[],[],[],lb,ub,@(P)confun(P,varTheta,meanTheta,DpAllOn_Alg,Rthetax_Alg,Rx_Alg,Rv_Alg,Dthres,Pmax),options);
+    [P,fval,exitFlag]=fmincon(@objfun,P0,[],[],[],[],lb,ub,@(P)confun(P,varTheta,meanTheta,DpAllOn_Alg,Rthetax_Alg,Rx_Alg,Rv_Alg,Dthres,Pmax),options);
     
-    temp=diag(DpAllOn_Alg/sqrt(Pmax)); %replace Pmax entries with new powers for each sensor
+    temp=diag(DpAllOn_Alg./sqrt(Pmax)); %replace Pmax entries with new powers for each sensor
     Dp_Alg=diag(temp'.*sqrt(P));
-    temp=diag(DhAllOn_Alg/sqrt(Pmax));
+    temp=diag(DhAllOn_Alg./sqrt(Pmax));
     Dh_Alg=diag(temp'.*sqrt(P));
    
     reducedDist=varTheta+meanTheta^2-Rthetax_Alg'*Dp_Alg*inv(Dp_Alg*Rx_Alg*Dp_Alg+Rv_Alg)*Dp_Alg*Rthetax_Alg;
