@@ -2,6 +2,14 @@
 
 function runSimulations_Callback(hObject, callbackdata,handlesEdit,handlesRadio,handleInfeasible,handlesDisplay,fileName)
         
+  %clear display
+    set(handlesDisplay{1},'String','');
+    set(handlesDisplay{2},'String','');
+    set(handlesDisplay{3},'String','');
+    set(handlesDisplay{4},'String','');
+    set(handlesDisplay{5},'String','');
+    refresh
+    
         % Get the values of the radio buttons in this group.
 		radio1Value = get(handlesRadio{1},'Value');
 		radio2Value = get(handlesRadio{2},'Value');
@@ -23,6 +31,8 @@ function runSimulations_Callback(hObject, callbackdata,handlesEdit,handlesRadio,
 
     FC_pos=[21,0];
     feasible=true;
+    
+    initialConfigPlot(fileName,sheet);
 
     %source statistics
     varTheta=60.811325;
@@ -50,11 +60,13 @@ function runSimulations_Callback(hObject, callbackdata,handlesEdit,handlesRadio,
     if(DistMIN>Dthres)
     feasible=false;
     set(handleInfeasible,'String','Infeasible!','Visible','On');
+    set(handlesDisplay{5},'String',DistMIN,'ForegroundColor','Red');
     refresh
     
     elseif(Dthres>varTheta+meanTheta^2)
-    set(handleInfeasible,'String','No need for a sensor network with that threshold!','Visible','On');
-        
+    set(handleInfeasible,'String','No need for a sensor network with that threshold!','Visible','On','Units','normalized','Position',[0.144 0.009 0.8 0.182]);
+    set(handlesDisplay{5},'String',DistMIN,'ForegroundColor','Red');  
+    
     else
     set(handleInfeasible,'Visible','Off');
     refresh
@@ -168,9 +180,11 @@ x=x(sheet,indices)';
 v_Alg=v(indices);
 theta=Rthetax_Alg'*DhAllOn_Alg*inv(DhAllOn_Alg*Rx_Alg*DhAllOn_Alg+Rv_prime_Alg)*DhAllOn_Alg*x+Rthetax_Alg'*DhAllOn_Alg*inv(DhAllOn_Alg*Rx_Alg*DhAllOn_Alg+Rv_prime_Alg)*v_Alg;
 reducedTheta=Rthetax_Alg'*Dh_Alg*inv(Dh_Alg*Rx_Alg*Dh_Alg+Rv_prime_Alg)*Dh_Alg*x+Rthetax_Alg'*Dh_Alg*inv(Dh_Alg*Rx_Alg*Dh_Alg+Rv_prime_Alg)*v_Alg;
-    end
+    
+    
 
-  
+
+
   %update display
   numActiveSensors=length(indices);
   totalPower=totalTransmitPower+numActiveSensors*Pactive;
@@ -178,6 +192,7 @@ reducedTheta=Rthetax_Alg'*Dh_Alg*inv(Dh_Alg*Rx_Alg*Dh_Alg+Rv_prime_Alg)*Dh_Alg*x
     set(handlesDisplay{2},'String',reducedDist);
     set(handlesDisplay{3},'String',length(indices));
     set(handlesDisplay{4},'String',totalPower);
+    set(handlesDisplay{5},'String',DistMIN);
     refresh
     
     
@@ -193,5 +208,8 @@ reducedTheta=Rthetax_Alg'*Dh_Alg*inv(Dh_Alg*Rx_Alg*Dh_Alg+Rv_prime_Alg)*Dh_Alg*x
     pause(0.5)
     scatter(sensorPos(1,i),sensorPos(2,i),40,'MarkerEdgeColor','r','MarkerFaceColor','r','LineWidth',0.5)
   end
+    end
+
+  
 
 end
