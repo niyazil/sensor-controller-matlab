@@ -21,7 +21,7 @@ varTheta=60.811325;
 meanTheta=180.59;
 
 %distortion constraint
-Dthres=19;
+Dthres=40;
 
 %run function to return Rthetax and Rx based on configuration
 [Rthetax, Rx]=config_stats(pos,varTheta, meanTheta,fileName,sheet);

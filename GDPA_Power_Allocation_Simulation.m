@@ -30,12 +30,17 @@ meanTheta=180.59;
 %distortion constraint
 Dthres=50;
 
+%channel statistics
+noise=0;
+v=0;
+gamma=2;
+
 %max and min powers in linear scale
 Pmax=10^(5/10); %5 dbm to mW
 % Pmin=10^(-40/10); %-40 dbm to mW
 
 %run function to return Rthetax and Rx based on configuration
-[Rthetax,Rx,DpAllOn,Rv,DhAllOn,Rv_prime,v]=config_stats_power_allocation(pos,FC_pos,varTheta,meanTheta,Pmax,fileName,sheet);
+[Rthetax,Rx,DpAllOn,Rv,DhAllOn,Rv_prime,v]=config_stats_power_allocation(pos,FC_pos,varTheta,meanTheta,noise,v,gamma,Pmax,fileName,sheet);
 
 %minimum distortion when ALL sensors are on
 DistMIN=varTheta+meanTheta^2-Rthetax'*DpAllOn*inv(DpAllOn*Rx*DpAllOn+Rv)*DpAllOn*Rthetax;

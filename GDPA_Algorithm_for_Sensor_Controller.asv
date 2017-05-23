@@ -21,7 +21,7 @@ varTheta=60.811325;
 meanTheta=180.59;
 
 %distortion constraint
-Dthres=19;
+Dthres=45;
 
 %run function to return Rthetax and Rx based on configuration
 [Rthetax, Rx]=config_stats(pos,varTheta, meanTheta,fileName,sheet);
@@ -42,7 +42,7 @@ else
 selected=false(1,numSensorsDeployed);
 
 %vector to store distortion values as selection occurs
-distVal=[varTheta varTheta];
+distVal=[varTheta+meanTheta^2 varTheta+meanTheta^2];
 
 %try out two sensor combination cuz initial set needs to be exhaustive
 subsetSize=2;

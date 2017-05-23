@@ -3,7 +3,9 @@ function [Rthetax, Rx]=config_stats(pos,varTheta, meanTheta,fileName,sheet)
 %create map of the beacon distances from the source with associated
 %correlation coefficient
 distances={4, 5, 6.5, 7, 8, 9, 10.5, 11.5, 13};
-correlations={0.87861134,0.870124269, 0.763726186, 0.865185936, 0.612602021, 0.583427047, 0.666666639, 0.612602021, 0.612602021};
+%correlations={0.87861134,0.870124269, 0.763726186, 0.865185936, 0.612602021, 0.583427047, 0.666666639, 0.612602021, 0.612602021};
+y = @(x)(-0.8395133 + 1.978441*exp(-0.03142192*x));
+correlations={y(4),y(5), y(6.5), y(7), y(8), y(9), y(10.5), y(11.5), y(13)};
 correlMap=containers.Map(distances, correlations);
 
 %Model 1(see Issues, Discoveries and Insights entry for 4/18/2017
@@ -15,7 +17,7 @@ rhox3=correlMap(pos(3));
 rhox4=correlMap(pos(4)); 
 rhox5=correlMap(pos(5)); 
 rhox6=correlMap(pos(6)); 
-rhox7=correlMap(pos(7)); 
+rhox7=correlMap(pos(7));
 
 
 %read sample means for this configuration

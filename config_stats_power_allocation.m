@@ -1,9 +1,10 @@
-function [Rthetax,Rx,DpAllOn,Rv,DhAllOn,Rv_prime,v]=config_stats_power_allocation(pos,FC_pos,varTheta,meanTheta,Pmax,fileName,sheet)
+function [Rthetax,Rx,DpAllOn,Rv,DhAllOn,Rv_prime,v]=config_stats_power_allocation(pos,FC_pos,varTheta,meanTheta,noise,v,gamma,Pmax,fileName,sheet)
 
 %create map of the beacon distances from the source with associated
 %correlation coefficient
 distances={4, 5, 6.5, 7, 8, 9, 10.5, 11.5, 13};
-correlations={0.87861134,0.870124269, 0.763726186, 0.865185936, 0.612602021, 0.583427047, 0.666666639, 0.612602021, 0.612602021};
+y = @(x)(-0.8395133 + 1.978441*exp(-0.03142192*x));
+correlations={y(4),y(5), y(6.5), y(7), y(8), y(9), y(10.5), y(11.5), y(13)};
 correlMap=containers.Map(distances, correlations);
 
 %Model 1(see Issues, Discoveries and Insights entry for 4/18/2017
@@ -56,20 +57,17 @@ DpAllOn=diag(sqrt(Pmax./varx));
         t=t(1:end-1); %to remove redundant point
         sensor_pos=[pos'.*cos(t);pos'.*sin(t)];
         d=(((sensor_pos(1,:)-FC_pos(1)).^2+(sensor_pos(2,:)-FC_pos(2)).^2).^(0.5))/1000; %from cm to decameters since LOS range of beacons is 150 m so assuming decays exponentially in 10s of meters
-
-        gamma=2;
         g=(d0./d).^gamma;
         
     %assume reciever noise is zero mean, uncorrelated, and same for all
     %recievers
-    noise=0.001;
     varRxNoise=noise*ones(1,7);
     Rv=diag(varRxNoise./(g.^2));
     Rv_prime=diag(varRxNoise);
     
 %return DhAllOn for which all sensors are at Pmax
 DhAllOn=diag(g.*sqrt(Pmax./varx)');    
-v=ones(7,1)*0.1;
+v=ones(7,1)*v;
 
 end
 
