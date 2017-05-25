@@ -2,37 +2,19 @@
 %meet the distortion constraint. This is for comparison against GDPA in
 %high beta regimes and where the number of activated sensors is at least 2
 
-clear all
+
+function [exhaustiveDist, exhaustiveSet]=exhaustive(varTheta, meanTheta, Dthres, Rthetax, Rx, numSensorsDeployed)
 
 feasible=true;
-fileName='configs-matlab1.xlsx';
-
-
-%prompt user for configuration number
-sheet=input('Enter the configuration number:');
-
-%read positions
-pos=xlsread(fileName,sheet,'N2:N8');
-numSensorsDeployed=length(pos);
-
-%source statistics
-varTheta=60.811325;
-meanTheta=180.59;
-
-%distortion constraint
-Dthres=38;
-
-%run function to return Rthetax and Rx based on configuration
-[Rthetax, Rx]=config_stats(pos,varTheta, meanTheta,fileName,sheet);
 
 %minimum distortion when ALL sensors are on
 DistMIN=varTheta+meanTheta^2-Rthetax'*inv(Rx)*Rthetax;
 
 
-
 %% Selection
 if(DistMIN>Dthres)
     feasible=false;
+    display('Infeasible!')
 elseif(Dthres>varTheta+meanTheta^2)
     display('No need for a sensor network with that threshold!')
 else
@@ -62,7 +44,7 @@ else
              
                if(tempDist<minDist)
                    minDist=tempDist;  %finding least distortion within the subset as long as within for loop of solved
-                   exhaustiveSet=subsets(comb,:);
+                   tempSet=subsets(comb,:);
                end
                
            end
@@ -72,5 +54,8 @@ else
        
    end
    
+   exhaustiveDist=minDist;
+   exhaustiveSet=tempSet;
     
+end
 end

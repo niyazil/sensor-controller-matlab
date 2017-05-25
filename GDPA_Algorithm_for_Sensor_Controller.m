@@ -21,7 +21,7 @@ varTheta=60.811325;
 meanTheta=180.59;
 
 %distortion constraint
-Dthres=60;
+Dthres=38;
 
 %run function to return Rthetax and Rx based on configuration
 [Rthetax, Rx]=config_stats(pos,varTheta, meanTheta,fileName,sheet);
@@ -101,8 +101,10 @@ subsets=nchoosek(1:numSensorsDeployed,subsetSize);  %all combinations of sensors
       distVal(k)=currentDist;
   end
   
+  %get exhaustive solution
+  [exhaustiveDist, exhaustiveSet]=exhaustive(varTheta, meanTheta, Dthres, Rthetax, Rx, numSensorsDeployed);
+
   %write power allocation to excel sheet
-  
     filename = 'C:\Users\Zumerjud\Desktop\Dropbox\power1.xls';
     sheet = 1;
     xlRange1 = 'A1';
