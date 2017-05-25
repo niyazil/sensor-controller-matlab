@@ -1,6 +1,6 @@
 function varargout=myGUI_GDPA(varargin)
 %% Initialization tasks
-
+    set(0,'defaultfigurecolor',[0.941 0.941 0.941])
     fh=figure('Visible','off');
     fileName='configs-matlab1.xlsx';
 
@@ -31,6 +31,8 @@ function varargout=myGUI_GDPA(varargin)
     txt4=uicontrol(p2,'Style','text','String','','Units','normalized','Position',[0.83 0.34 0.1 0.05],'backgroundcolor',[0.662745 0.662745 0.662745],'FontSize',14);
     txtLabel5=uicontrol(p2,'Style','text','String','Achievable distortion','Units','normalized','Position',[0.629 0.8 0.19 0.086],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');
     txt5=uicontrol(p2,'Style','text','String','','Units','normalized','Position',[0.83 0.84 0.1 0.05],'backgroundcolor',[0.662745 0.662745 0.662745],'FontSize',14);
+    txtLabel6=uicontrol(p2,'Style','text','String','mW','Units','normalized','Position',[0.938276990185388 0.3402460456941998 0.03666630316248865 0.04839015817223132],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');
+    txtLabel7=uicontrol(p2,'Style','text','String','° C','Units','normalized','Position',[0.9360959651035998 0.6337434094903331 0.02399127589967421 0.05542003514938424],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');
     
     handlesDisplay={txt1,txt2,txt3,txt4,txt5};
     editLabel1=uicontrol(p1,'Style','text','String','Distortion threshold','Units','normalized','Position',[0.1 0.8 0.6 0.1],'FontSize',14,'FontName','Cambria','HorizontalAlignment','right');

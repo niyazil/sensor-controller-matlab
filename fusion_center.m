@@ -13,10 +13,9 @@ fileName='C:\Users\Zumerjud\Desktop\Dropbox\sensorReadings.xls';
 %x=[50.25	48.25	41	42.5	42.75	49	42.25]'; %configuration 1 at minute 50
 %x=[28	26.75	30	26.25	38.75	31	31.5]'; %configuration 2 at minute 2
 %x=[31.75	29.75	41	29.25	50	38	42.25]'; %configuration 2 at minute 16
-%x=[46.25	29.75	26.25	29.25	28	34.75	28.5]'; %configuration 3 at minute 16
+x=[46.25	29.75	26.25	29.25	28	34.75	28.5]'; %configuration 3 at minute 2
 %x=[66.5	37.25	26.25	36	31.75	45.75	31.5]'; %configuration 3 at minute 16
-
+x=x(indices)
 
 %actual estimate
-x=xlsread(fileName,1,'B2:B8');
 theta=Rthetax_Alg'*inv(Rx_Alg)*x;
