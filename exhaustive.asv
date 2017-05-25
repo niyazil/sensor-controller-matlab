@@ -20,7 +20,7 @@ varTheta=60.811325;
 meanTheta=180.59;
 
 %distortion constraint
-Dthres=38;
+Dthres=60;
 
 %run function to return Rthetax and Rx based on configuration
 [Rthetax, Rx]=config_stats(pos,varTheta, meanTheta,fileName,sheet);
@@ -45,7 +45,7 @@ else
    subsetSize=1;
    while(~solved && subsetSize<=numSensorsDeployed) %varying subset size
        subsets=nchoosek(1:numSensorsDeployed,subsetSize);
-       [noOfComb subsetSize]=size(subsets);
+       [noOfComb subsetSize]=size(currentSizeSubsets);
        
        minDist=Inf;
        for comb=1:noOfComb
@@ -56,15 +56,11 @@ else
        %calculate distortion for this pair and store it in the tempDist
        %vector
        tempDist=varTheta+meanTheta^2-temp_Rthetax_Alg'*inv(temp_Rx_Alg)*temp_Rthetax_Alg; 
-           if (tempDist<=Dthres) 
-               
-               solved=true; %solved
-             
+           if (tempDist<=DistMIN) %solved
+               solved=t
                if(tempDist<minDist)
-                   minDist=tempDist;  %finding least distortion within the subset as long as within for loop of solved
-                   exhaustiveSet=subsets(comb,:);
+                   minDist=tempDist;  %finding least distortion within the subset
                end
-               
            end
        end
    
